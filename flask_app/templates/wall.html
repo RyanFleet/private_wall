@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Wall</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <h1>Welcome to the Wall</h1>
+            <h3>Hi, {{user.first_name}} {{user.last_name}}</h3>
+            <a href="/user/logout">Logout</a>
+        </nav>
+        <table>
+            <thead>
+                <tr class="headers">
+                    <th>From</th>
+                    <th>Message</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for message in messages %}
+                <tr class="content">
+                    <td>{{message.creator}}</td>
+                    <td>{{message.message}}</td>
+                    <td><button><a href="/message/delete/{{message.id}}">Delete</a></button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% for user in users %}
+        {% if user.id != session.user_id %}
+        <div class="send">
+            <form action="/message/create" method="post">
+                <input type="hidden" name="creator_id" value="{{session.user_id}}">
+                <label>
+                    Message {{user.first_name}}:
+                    <input type="hidden" name="reciever_id" value="{{user.id}}">
+                </label>
+                <textarea name="message" cols="20" rows="2"></textarea>
+                <input type="submit" value="Send Message">
+            </form>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</body>
+</html>
